@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { Box, Stack, Typography, Button, Modal, TextField, IconButton, AppBar, Toolbar, InputBase, Container, Paper } from '@mui/material';
 import { Add, Remove, Search } from '@mui/icons-material';
@@ -29,17 +30,11 @@ const style = {
   gap: 3,
 };
 
-export default function Home() {
-  const [isClient, setIsClient] = useState(false);
+const InventoryManagement = () => {
   const [inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    setIsClient(true);
-    updateInventory();
-  }, []);
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -51,6 +46,10 @@ export default function Home() {
     });
     setInventory(inventoryList);
   };
+
+  useEffect(() => {
+    updateInventory();
+  }, []);
 
   const addItem = async (item) => {
     if (!item) return; // Prevent adding empty items
@@ -180,4 +179,7 @@ export default function Home() {
       </Paper>
     </Container>
   );
-}
+};
+
+// Dynamically import the InventoryManagement component with SSR disabled
+export default dynamic(() => Promise.resolve(InventoryManagement), { ssr: false });
