@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Stack, Typography, Button, Modal, TextField, IconButton, AppBar, Toolbar, InputBase, Container, Paper } from '@mui/material';
 import { Add, Remove, Search } from '@mui/icons-material';
-import { firestore } from '/@firebase';
+import { firestore } from '@/firebase';
 import {
   collection,
   doc,
