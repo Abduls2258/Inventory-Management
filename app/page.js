@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { Box, Stack, Typography, Button, Modal, TextField, IconButton, AppBar, Toolbar, InputBase, Container, Paper } from '@mui/material';
 import { Add, Remove, Search } from '@mui/icons-material';
-import { firestore } from '@/firebase';
+import { firestore } from '../lib/firebase';
 import {
   collection,
   doc,
@@ -31,10 +31,16 @@ const style = {
 };
 
 const InventoryManagement = () => {
+  const [isClient, setIsClient] = useState(false);
   const [inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemName, setItemName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    setIsClient(true);
+    updateInventory();
+  }, []);
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -46,10 +52,6 @@ const InventoryManagement = () => {
     });
     setInventory(inventoryList);
   };
-
-  useEffect(() => {
-    updateInventory();
-  }, []);
 
   const addItem = async (item) => {
     if (!item) return; // Prevent adding empty items
@@ -80,6 +82,10 @@ const InventoryManagement = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
 
   return (
     <Container maxWidth="md" sx={{ bgcolor: '#f0f8ff', minHeight: '100vh', py: 4 }}>
@@ -181,5 +187,4 @@ const InventoryManagement = () => {
   );
 };
 
-// Dynamically import the InventoryManagement component with SSR disabled
 export default dynamic(() => Promise.resolve(InventoryManagement), { ssr: false });
