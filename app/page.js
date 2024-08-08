@@ -39,8 +39,13 @@ const InventoryManagement = () => {
 
   useEffect(() => {
     setIsClient(true);
-    updateInventory();
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      updateInventory();
+    }
+  }, [isClient]);
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -82,10 +87,6 @@ const InventoryManagement = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  if (!isClient) {
-    return null; // or a loading spinner
-  }
 
   return (
     <Container maxWidth="md" sx={{ bgcolor: '#f0f8ff', minHeight: '100vh', py: 4 }}>
@@ -188,3 +189,4 @@ const InventoryManagement = () => {
 };
 
 export default dynamic(() => Promise.resolve(InventoryManagement), { ssr: false });
+
